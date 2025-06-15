@@ -32,7 +32,7 @@ const App = () => {
     return damage > 0 ? damage : 1
   }
 
-  const executeBattle = async () => {
+  const executeBattle =  () => {
     const monsterOne = monster[0];
     const monsterTwo = monster[1];
 

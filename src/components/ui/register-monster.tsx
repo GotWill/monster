@@ -38,7 +38,7 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
 
     const image_url = form.watch('image_url')
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const onSubmit =  (values: z.infer<typeof formSchema>) => {
         onRegister(values)
         form.reset({
             name: '',
