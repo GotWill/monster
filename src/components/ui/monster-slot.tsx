@@ -12,7 +12,7 @@ const MonsterSlot = ({ monster, position }: MonsterSlotProps) => {
     const isLeft = position === "left"
     return (
       <div
-        className={`relative bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 rounded-2xl border-2 border-slate-600 p-6 min-h-[350px] flex flex-col items-center justify-center transition-all duration-500 hover:scale-105 ${isLeft ? " hover:border-purple-400" : "hover:border-green-400"} hover:shadow-2xl ${isLeft ? "hover:shadow-purple-500/30" : "hover:shadow-green-500/30"} group overflow-hidden`}
+        className={`relative bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 rounded-2xl border-2 border-slate-600 p-6 min-h-[350px] flex flex-col items-center justify-center transition-all duration-500 hover:scale-105 ${isLeft ? " hover:border-purple-400" : "hover:border-green-400"} hover:shadow-2xl ${isLeft ? "hover:shadow-purple-500/30" : "hover:shadow-green-500/30"} group overflow-hidden top-2`}
       >
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent transform rotate-45 translate-x-full group-hover:translate-x-[-100%] transition-transform duration-1000"></div>

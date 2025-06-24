@@ -24,20 +24,20 @@ const BattleLogArea = ({ battleLog }: BattleLogProps) => {
                         acc[log.round].push(log);
                         return acc;
                     }, {} as Record<number, BattleLog[]>)
-                ).map(([round, entries]) => (
+                ).map(([round, logs]) => (
                     <li key={round} className="bg-slate-700 p-3 rounded shadow-sm">
                         <div className="text-sm text-slate-400 mb-2">🌀 Round {round}</div>
 
-                        {entries.map((entry, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                                <span className="font-bold text-yellow-300">{entry.attacker}</span>
+                        {logs.map((log, id) => (
+                            <div key={id} className="flex items-center gap-2">
+                                <span className="font-bold text-yellow-300">{log.attacker}</span>
                                 <span>causou</span>
-                                <span className="text-red-400 font-bold">{entry.damage} de dano</span>
+                                <span className="text-red-400 font-bold">{log.damage} de dano</span>
                                 <span>em</span>
-                                <span className="font-bold text-blue-300">{entry.defender}</span>
+                                <span className="font-bold text-blue-300">{log.defender}</span>
                                 <span>
                                     (HP restante:{" "}
-                                    <span className="text-green-400">{entry.defenderHpAfter}</span>)
+                                    <span className="text-green-400">{log.defenderHpAfter}</span>)
                                 </span>
                             </div>
                         ))}

@@ -9,22 +9,22 @@ import type { BattleLog, MonsterBattle } from "./types/monster";
 
 
 const App = () => {
-  const [monster, setMonster] = useState<MonsterBattle[]>([])
+  const [monsters, setMonsters] = useState<MonsterBattle[]>([])
   const [battleLog, setBattleLog] = useState<BattleLog[]>([])
   const [isBattling, setIsBattling] = useState(false)
   const [winner, setWinner] = useState<MonsterBattle | null>(null)
 
 
   const handleRegister = (newMonster: MonsterBattle) => {
-    setMonster((prev) => [...prev, newMonster]);
+    setMonsters((prev) => [...prev, newMonster]);
   };
 
 
-  const orderMonster = (a: MonsterBattle, b: MonsterBattle): [MonsterBattle, MonsterBattle] => {
-    if (a.speed > b.speed) return [a, b]
-    if (b.speed > a.speed) return [b, a]
+  const orderMonster = (monsterOne: MonsterBattle, monsterTwo: MonsterBattle): [MonsterBattle, MonsterBattle] => {
+    if (monsterOne.speed > monsterTwo.speed) return [monsterOne, monsterTwo]
+    if (monsterTwo.speed > monsterOne.speed) return [monsterTwo, monsterOne]
 
-    return a.attack >= b.attack ? [a, b] : [b, a]
+    return monsterOne.attack >= monsterTwo.attack ? [monsterOne, monsterTwo] : [monsterTwo, monsterOne]
   }
 
   const calculateDamage = (attack: number, defense: number) => {
@@ -32,9 +32,9 @@ const App = () => {
     return damage > 0 ? damage : 1
   }
 
-  const executeBattle =  () => {
-    const monsterOne = monster[0];
-    const monsterTwo = monster[1];
+  const executeBattle = () => {
+    const monsterOne = monsters[0];
+    const monsterTwo = monsters[1];
 
     const [attacker, defender] = orderMonster(monsterOne, monsterTwo);
 
@@ -57,18 +57,17 @@ const App = () => {
 
       if (hpTwo <= 0) break;
 
-      const damageTwho = calculateDamage(defender.attack, attacker.defense);
-      hpOne -= damageTwho;
+      const damageTwo = calculateDamage(defender.attack, attacker.defense);
+      hpOne -= damageTwo;
       log.push({
         round,
         attacker: defender.name,
         defender: attacker.name,
-        damage: damageTwho,
+        damage: damageTwo,
         defenderHpAfter: Math.max(hpOne, 0),
       });
 
       round++;
-
     }
 
     const winner = hpOne > 0 ? attacker : defender;
@@ -92,11 +91,13 @@ const App = () => {
   }
 
   const clearArena = () => {
-    setMonster([])
+    setMonsters([])
     setWinner(null)
     setIsBattling(false)
     setBattleLog([])
   }
+
+  const maxRound = Math.max(...battleLog.map(logs => logs.round))
 
 
   return (
@@ -123,17 +124,17 @@ const App = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <h4 className="text-sm font-medium text-purple-400 text-center">JOGADOR 1</h4>
-                    <MonsterSlot monster={monster[0]} position="left" />
+                    <MonsterSlot monster={monsters[0]} position="left" />
                   </div>
                   <div className="space-y-2">
                     <h4 className="text-sm font-medium text-green-400 text-center">JOGADOR 2</h4>
-                    <MonsterSlot monster={monster[1]} position="right" />
+                    <MonsterSlot monster={monsters[1]} position="right" />
                   </div>
                 </div>
 
                 {
-                  monster.length >= 2 && !winner && (
-                    <div className="mt-6 text-center">
+                  monsters.length >= 2 && !winner && (
+                    <div className="mt-8 text-center">
                       <Button
                         onClick={startBattle}
                         disabled={isBattling}
@@ -158,8 +159,8 @@ const App = () => {
                       <h3 className="text-2xl font-bold text-yellow-400 mb-2">🏆 VENCEDOR</h3>
                       <p className="text-xl text-green-400 font-bold">{winner.name}</p>
                       <p className="text-sm text-slate-300 mt-1">
-                        Batalha finalizada em {Math.max(...battleLog.map(entry => entry.round))} round
-                        {Math.max(...battleLog.map(entry => entry.round)) !== 1 ? "s" : ""}
+                        Batalha finalizada em {maxRound} round
+                        {maxRound !== 1 ? "s" : ""}
                       </p>
                     </div>
                   )
@@ -188,7 +189,7 @@ const App = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <RegisterForm onRegister={handleRegister} />
+                <RegisterForm onRegister={handleRegister} monsters={monsters}/>
               </CardContent>
             </Card>
           </div>

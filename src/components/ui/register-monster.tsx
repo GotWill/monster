@@ -9,10 +9,13 @@ import { Label } from "@radix-ui/react-label";
 import type { MonsterBattle } from "@/types/monster";
 
 interface RegisterFormProps {
-    onRegister: (prev: MonsterBattle) => void
+    onRegister: (prev: MonsterBattle) => void;
+    monsters: MonsterBattle[]
 }
 
-const RegisterForm = ({ onRegister }: RegisterFormProps) => {
+const RegisterForm = ({ onRegister, monsters }: RegisterFormProps) => {
+
+    const disabledInputs = monsters.length === 2
 
     const formSchema = z.object({
         name: z.string().min(1, { message: 'Nome é obrigatório' }),
@@ -20,10 +23,12 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
         defense: z.coerce.number().min(1, { message: 'Defesa deve ser maior que 0' }),
         hp: z.coerce.number().min(1, { message: 'HP deve ser maior que 0' }),
         speed: z.coerce.number().min(1, { message: 'Velocidade deve ser maior que 0' }),
-        image_url: z.string().min(1, { message: 'URL da imagem é obrigatória' }),
+        image_url: z.string().url({ message: 'URL da imagem é obrigatória' }),
     });
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    type formSchema = z.infer<typeof formSchema>
+
+    const form = useForm<formSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: '',
@@ -38,7 +43,7 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
 
     const image_url = form.watch('image_url')
 
-    const onSubmit =  (values: z.infer<typeof formSchema>) => {
+    const onSubmit = (values: formSchema) => {
         onRegister(values)
         form.reset({
             name: '',
@@ -49,6 +54,8 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
             image_url: '',
         })
     }
+
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -59,7 +66,7 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
                         <FormItem>
                             <FormLabel className="text-slate-200">Nome</FormLabel>
                             <FormControl>
-                                <Input placeholder="Digite o nome do monstro" {...field} />
+                                <Input placeholder="Digite o nome do monstro" {...field} disabled={disabledInputs} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -74,7 +81,7 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
                             <FormItem>
                                 <FormLabel className="text-slate-200 flex gap-2"><Sword className="w-4 h-4 text-red-400" />Ataque</FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="" {...field} />
+                                    <Input type="number" placeholder="" {...field} disabled={disabledInputs} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -88,7 +95,7 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
                             <FormItem>
                                 <FormLabel className="text-slate-200 flex gap-2"> <Shield className="w-4 h-4 text-blue-400" />Defesa</FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="" {...field} />
+                                    <Input type="number" placeholder="" {...field} disabled={disabledInputs} />
                                 </FormControl>
 
                                 <FormMessage />
@@ -103,9 +110,9 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
                         name="speed"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-slate-200 flex gap-2"> <Zap className="w-4 h-4 text-yellow-400" />Velocidade</FormLabel>
+                                <FormLabel className="text-slate-200 flex gap-2 "> <Zap className="w-4 h-4 text-yellow-400 " />Velocidade</FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="" {...field} />
+                                    <Input type="number" placeholder="" {...field} disabled={disabledInputs} />
                                 </FormControl>
 
                                 <FormMessage />
@@ -119,7 +126,7 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
                             <FormItem>
                                 <FormLabel className="text-slate-200 flex gap-2"><Heart className="w-4 h-4 text-green-400" />HP</FormLabel>
                                 <FormControl>
-                                    <Input type="number" placeholder="" {...field} />
+                                    <Input type="number" placeholder="" {...field} disabled={disabledInputs} />
                                 </FormControl>
 
                                 <FormMessage />
@@ -135,14 +142,13 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
                         <FormItem>
                             <FormLabel className="text-slate-200">URL da Imagem</FormLabel>
                             <FormControl>
-                                <Input placeholder="https://exemplo.com/imagem.jpg" {...field} />
+                                <Input placeholder="https://exemplo.com/imagem.jpg" {...field} disabled={disabledInputs} />
                             </FormControl>
 
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-
                 {image_url && (
                     <div className="space-y-2">
                         <Label className="text-slate-200">Preview</Label>
@@ -156,6 +162,7 @@ const RegisterForm = ({ onRegister }: RegisterFormProps) => {
                     </div>
                 )}
                 <Button
+                    disabled={disabledInputs}
                     type="submit"
                     className="w-full bg-gradient-to-r from-green-600 to-purple-600 hover:from-green-700 hover:to-purple-700 text-white font-bold py-2 transition-all duration-200"
                 >
